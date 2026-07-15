@@ -5,7 +5,7 @@ import jax
 import jax.numpy as jnp
 import flax.linen as nn
 import pickle as pkl
-import gym
+import gymnasium as gym
 import numpy as np
 import copy
 import time
@@ -13,6 +13,22 @@ from tqdm import tqdm
 from functools import partial
 
 from common import PRNGKey, Model
+
+
+def _reset_obs(env):
+    result = env.reset()
+    if isinstance(result, tuple):
+        return result[0]
+    return result
+
+
+def _step_env(env, action):
+    result = env.step(action)
+    if len(result) == 5:
+        obs, reward, terminated, truncated, info = result
+        return obs, reward, terminated or truncated, info
+    obs, reward, done, info = result
+    return obs, reward, done, info
 
 
 @jax.jit
@@ -57,7 +73,7 @@ def evaluate(
     s = time.time()
     key = jax.device_put(PRNGKey(seed))
     for env in envs:
-        _observations.append(env.reset())
+        _observations.append(_reset_obs(env))
         observations.append([])
         dones.append(False)
         states.append([])
@@ -92,7 +108,7 @@ def evaluate(
             observations[i].append(np.copy(_observations[i]))
             states[i].append(np.copy(_states[i]))
             actions[i].append(np.copy(_actions[i]))
-            obs, reward, done, info = envs[i].step(_actions[i])
+            obs, reward, done, info = _step_env(envs[i], _actions[i])
             _observations[i] = obs
             rewards[i].append(reward)
             if done:

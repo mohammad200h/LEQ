@@ -153,10 +153,9 @@ class D4RLDataset(Dataset):
     def __init__(
         self, env, discount: float = 1.0, clip_to_eps: bool = True, eps: float = 1e-5
     ):
-        import d4rl
-        import gym
+        from offlinerlkit.utils.d4rl_env import qlearning_dataset
 
-        dataset = d4rl.qlearning_dataset(env)
+        dataset = qlearning_dataset(env)
 
         if clip_to_eps:
             lim = 1 - eps

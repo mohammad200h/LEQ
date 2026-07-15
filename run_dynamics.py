@@ -3,13 +3,10 @@ import os
 import sys
 import random
 
-import gym
-import d4rl
-import d4rl_ext
-
 import numpy as np
 import torch
 
+from offlinerlkit.utils.d4rl_env import make_env, set_env_seed
 
 from offlinerlkit.nets import MLP
 from offlinerlkit.modules import ActorProb, Critic, TanhDiagGaussian, EnsembleDynamicsModel
@@ -21,6 +18,7 @@ from offlinerlkit.buffer import ReplayBuffer
 from offlinerlkit.utils.logger import Logger, make_log_dirs
 from offlinerlkit.policy_trainer import MBPolicyTrainer
 from offlinerlkit.policy import COMBOPolicy
+from wandb_utils import add_wandb_args, init_wandb, finish_wandb
 
 
 """
@@ -81,8 +79,8 @@ def get_args():
     parser.add_argument("--eval_episodes", type=int, default=10)
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
-    parser.add_argument("--wandb_key", type=str, default=None)
 
+    add_wandb_args(parser)
     return parser.parse_args()
 
 def load_neorl_dataset(env, data_type, traj_num=1000):
@@ -96,17 +94,6 @@ def load_neorl_dataset(env, data_type, traj_num=1000):
     return dataset
 
 def train(args=get_args()):
-    '''
-    wandb.login(key=args.wandb_key)
-    run = wandb.init(
-        project="COMBO+IQL",
-        name=f"COMBO_{args.task}_{args.seed}",
-        config={
-            'env_name': args.task,
-            'seed': args.seed,
-        },
-    )
-    '''
     is_neorl = args.task.split('-')[1] == 'v3'
 
     # create env and dataset
@@ -116,9 +103,14 @@ def train(args=get_args()):
         env = neorl.make(task+'-'+version)
         dataset = load_neorl_dataset(env, data_type)
     else:
-        env = gym.make(args.task)
+        env = make_env(args.task)
         dataset = qlearning_dataset(env)
-    args.obs_shape = env.observation_space.shape
+    if 'antmaze' in args.task:
+        dataset["rewards"] -= 1.0
+    if env.observation_space.shape is not None:
+        args.obs_shape = env.observation_space.shape
+    else:
+        args.obs_shape = dataset["observations"].shape[1:]
     args.action_dim = np.prod(env.action_space.shape)
     args.max_action = env.action_space.high[0]
 
@@ -128,7 +120,10 @@ def train(args=get_args()):
     torch.manual_seed(args.seed)
     torch.cuda.manual_seed_all(args.seed)
     torch.backends.cudnn.deterministic = True
-    env.seed(args.seed)
+    if is_neorl:
+        env.seed(args.seed)
+    else:
+        set_env_seed(env, args.seed)
 
     # create policy model
     actor_backbone = MLP(input_dim=np.prod(args.obs_shape), hidden_dims=args.hidden_dims)
@@ -138,7 +133,8 @@ def train(args=get_args()):
         latent_dim=getattr(actor_backbone, "output_dim"),
         output_dim=args.action_dim,
         unbounded=True,
-        conditioned_sigma=True
+        conditioned_sigma=True,
+        max_mu=args.max_action
     )
     actor = ActorProb(actor_backbone, dist, args.device)
     critic1 = Critic(critic1_backbone, args.device)
@@ -231,15 +227,21 @@ def train(args=get_args()):
         "dynamics_training_progress": "csv",
         "tb": "tensorboard"
     }
-    logger = Logger(log_dirs, output_config, wandb_logger=None)
+    logger = Logger(log_dirs, output_config)
     logger.log_hyperparameters(vars(args))
+    init_wandb(
+        args.track,
+        args.project,
+        args.wandb_name,
+        vars(args),
+        log_dirs=log_dirs,
+    )
 
     dynamics.train(real_buffer.sample_all(), logger, max_epochs_since_update=5)
     os.makedirs(os.path.join('./models/dynamics-ensemble/', str(args.seed), args.task), exist_ok = True)
     dynamics.save(os.path.join('./models/dynamics-ensemble/', str(args.seed), args.task))
+    finish_wandb(args.track)
 
-import wandb
+
 if __name__ == "__main__":
-    #vessl.configure(project_name='Offline-Model-based-RL')
-    #vessl.init()
     train()

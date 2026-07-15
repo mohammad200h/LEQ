@@ -112,18 +112,15 @@ def make_env_and_dataset(env_name, seed, discount, model=None):
     is_neorl = env_name.split("-")[1] == "v3"
     if is_neorl:
         import neorl
-        import gym
 
         task, version, data_type = tuple(env_name.split("-"))
         env = neorl.make(task + "-" + version)
         dataset = NeoRLDataset(env, data_type, discount)
         raw_dataset = None
     else:
-        import d4rl
-        import d4rl_ext
-        import gym
+        from offlinerlkit.utils.d4rl_env import make_env
 
-        env = gym.make(env_name)
+        env = make_env(env_name)
         dataset = D4RLDataset(env, discount)
         raw_dataset = env.get_dataset()
     env = wrappers.EpisodeMonitor(env)
@@ -191,24 +188,19 @@ def main(_):
         run = None
 
     if "dmc" in FLAGS.env_name:
-        import gym
-
         _, task, diff = FLAGS.env_name.split("-")
         env = common.DMC(task, 2, (64, 64), -1)
         print(env.reset())
     else:
         if "v3" in FLAGS.env_name:
             import neorl
-            import gym
 
             task, version, data_type = tuple(FLAGS.env_name.split("-"))
             env = neorl.make(task + "-" + version)
         else:
-            import d4rl
-            import d4rl_ext
-            import gym
+            from offlinerlkit.utils.d4rl_env import make_env
 
-            env = gym.make(FLAGS.env_name)
+            env = make_env(FLAGS.env_name)
 
     if FLAGS.dynamics == "torch":
         obs_dim, action_dim = (
@@ -243,6 +235,8 @@ def main(_):
 
     if FLAGS.env_name.split("-")[1] == "v3":
         # NeoRL
+        import gym
+
         name, version, _ = FLAGS.env_name.split("-")
         env_name = name + "-" + version
         eval_envs = []
@@ -257,10 +251,12 @@ def main(_):
             env.observation_space.seed(seed)
             eval_envs.append(env)
     else:
-        # D4RL
+        # D4RL (Gymnasium MuJoCo v5 via OfflineRL-Kit)
+        from offlinerlkit.utils.d4rl_env import make_env
+
         eval_envs = []
         for i in range(FLAGS.eval_episodes):
-            env = gym.make(FLAGS.env_name)
+            env = make_env(FLAGS.env_name)
             env = wrappers.EpisodeMonitor(env)
             env = wrappers.SinglePrecision(env)
             seed = FLAGS.seed + i

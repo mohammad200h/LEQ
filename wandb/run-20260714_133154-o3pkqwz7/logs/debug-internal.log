@@ -1,0 +1,24 @@
+{"time":"2026-07-14T13:31:54.398436036Z","level":"INFO","msg":"wandb-core"}
+{"time":"2026-07-14T13:31:54.398658278Z","level":"INFO","msg":"stream: starting","core version":"0.28.0"}
+{"time":"2026-07-14T13:31:54.644051444Z","level":"ERROR","msg":"api: HTTP error","status":401,"method":"POST","url":"https://api.wandb.ai/graphql"}
+{"time":"2026-07-14T13:31:54.644104996Z","level":"ERROR","msg":"featurechecker: failed to load features, all will be disabled","error":"returned error 401: {\"data\":null}"}
+{"time":"2026-07-14T13:31:54.749189009Z","level":"ERROR","msg":"api: HTTP error","status":401,"method":"POST","url":"https://api.wandb.ai/graphql"}
+{"time":"2026-07-14T13:31:54.74921538Z","level":"ERROR","msg":"featurechecker: failed to load features, all will be disabled","error":"returned error 401: {\"data\":null}"}
+{"time":"2026-07-14T13:31:54.749245567Z","level":"INFO","msg":"stream: created new stream","id":"o3pkqwz7"}
+{"time":"2026-07-14T13:31:54.749283489Z","level":"INFO","msg":"handler: started"}
+{"time":"2026-07-14T13:31:54.749343082Z","level":"INFO","msg":"stream: started"}
+{"time":"2026-07-14T13:31:54.749371616Z","level":"INFO","msg":"sender: started"}
+{"time":"2026-07-14T13:31:54.749364042Z","level":"INFO","msg":"writer: started","stream_id":"o3pkqwz7"}
+{"time":"2026-07-14T13:31:54.863247274Z","level":"ERROR","msg":"api: HTTP error","status":401,"method":"POST","url":"https://api.wandb.ai/graphql"}
+{"time":"2026-07-14T13:31:54.863299503Z","level":"ERROR","msg":"featurechecker: failed to load features, all will be disabled","error":"returned error 401: {\"data\":null}"}
+{"time":"2026-07-14T13:31:54.863318149Z","level":"WARN","msg":"runupserter: server does not expand metric globs but the x_server_side_expand_glob_metrics setting is set; ignoring"}
+{"time":"2026-07-14T13:31:54.97210619Z","level":"ERROR","msg":"api: HTTP error","status":401,"method":"POST","url":"https://api.wandb.ai/graphql"}
+{"time":"2026-07-14T13:31:54.972197904Z","level":"ERROR","msg":"runupserter: failed to init run","error":"returned error 401: {\"data\":null}"}
+{"time":"2026-07-14T13:31:54.979265703Z","level":"ERROR","msg":"sender: uploadConfigFile: runhandle: run not yet initialized"}
+{"time":"2026-07-14T13:31:54.97946931Z","level":"ERROR","msg":"runfiles: runhandle: run not yet initialized"}
+{"time":"2026-07-14T13:31:54.979519526Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-07-14T13:31:54.979529945Z","level":"INFO","msg":"stream: finishing up"}
+{"time":"2026-07-14T13:31:54.979536177Z","level":"INFO","msg":"handler: closed"}
+{"time":"2026-07-14T13:31:54.979557688Z","level":"INFO","msg":"sender: closed"}
+{"time":"2026-07-14T13:31:54.979561766Z","level":"INFO","msg":"stream: all finished"}
+{"time":"2026-07-14T13:31:54.983115097Z","level":"ERROR","msg":"stream: runURL: runhandle: run not yet initialized"}

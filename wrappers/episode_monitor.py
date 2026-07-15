@@ -1,18 +1,26 @@
 import time
 
-import gym
 import numpy as np
 
 from wrappers.common import TimeStep
 
 
-class EpisodeMonitor(gym.ActionWrapper):
+class EpisodeMonitor:
     """A class that computes episode returns and lengths."""
 
-    def __init__(self, env: gym.Env):
-        super().__init__(env)
+    def __init__(self, env):
+        self.env = env
+        self.observation_space = env.observation_space
+        self.action_space = env.action_space
         self._reset_stats()
         self.total_timesteps = 0
+
+    def __getattr__(self, name):
+        return getattr(self.env, name)
+
+    @property
+    def unwrapped(self):
+        return getattr(self.env, "unwrapped", self.env)
 
     def _reset_stats(self):
         self.reward_sum = 0.0
@@ -20,8 +28,14 @@ class EpisodeMonitor(gym.ActionWrapper):
         self.start_time = time.time()
 
     def step(self, action: np.ndarray) -> TimeStep:
-        observation, reward, done, info = self.env.step(action)
+        result = self.env.step(action)
+        if len(result) == 5:
+            observation, reward, terminated, truncated, info = result
+        else:
+            observation, reward, done, info = result
+            terminated, truncated = bool(done), False
 
+        done = terminated or truncated
         self.reward_sum += reward
         self.episode_length += 1
         self.total_timesteps += 1
@@ -33,13 +47,27 @@ class EpisodeMonitor(gym.ActionWrapper):
             info["episode"]["length"] = self.episode_length
             info["episode"]["duration"] = time.time() - self.start_time
 
-            if hasattr(self, "get_normalized_score"):
+            if hasattr(self.env, "get_normalized_score"):
                 info["episode"]["return"] = (
-                    self.get_normalized_score(info["episode"]["return"]) * 100.0
+                    self.env.get_normalized_score(info["episode"]["return"]) * 100.0
                 )
 
-        return observation, reward, done, info
+        return observation, reward, terminated, truncated, info
 
-    def reset(self) -> np.ndarray:
+    def reset(self, *, seed=None, **kwargs):
         self._reset_stats()
-        return self.env.reset()
+        if seed is not None:
+            kwargs["seed"] = seed
+        try:
+            result = self.env.reset(**kwargs)
+        except TypeError:
+            # Legacy gym / NeoRL reset without kwargs.
+            result = self.env.reset()
+        if isinstance(result, tuple):
+            return result
+        return result, {}
+
+    def seed(self, seed: int):
+        if hasattr(self.env, "seed"):
+            return self.env.seed(seed)
+        return self.reset(seed=seed)

@@ -1,0 +1,94 @@
+I0714 15:50:24.479955 130369540136960 acceleratesupport.py:24] No OpenGL_accelerate module loaded: No module named 'OpenGL_accelerate'
+AdroitHandRelocateDense-v1, AdroitHandHammerDense-v1, AdroitHandDoorDense-v1 environment's reward functions were updated in v1.2.1 without an environment version update. Therefore, use gymnasium-robotics==1.2.0 for v1 reproducibility or use v2 in gymnasium-robotics>=1.4.3. See https://github.com/Farama-Foundation/Gymnasium-Robotics/pull/220 for more details
+17 6
+TESTING SEEDS!
+load datafile: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████| 11/11 [00:00<00:00, 26.58it/s]
+load datafile: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████| 11/11 [00:00<00:00, 27.85it/s]
+/usr/local/lib/python3.10/dist-packages/gymnasium/spaces/box.py:231: UserWarning: [33mWARN: Box low's precision lowered by casting to float32, current low.dtype=float64[0m
+  gym.logger.warn(
+/usr/local/lib/python3.10/dist-packages/gymnasium/spaces/box.py:297: UserWarning: [33mWARN: Box high's precision lowered by casting to float32, current high.dtype=float64[0m
+  gym.logger.warn(
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████| 301698/301698 [00:00<00:00, 560004.54it/s]
+Reward scaler 0.23942652243670803 0.0
+I0714 15:50:28.588565 130369540136960 xla_bridge.py:622] Unable to initialize backend 'rocm': NOT_FOUND: Could not find registered platform with name: "rocm". Available platform names are: CUDA Interpreter
+I0714 15:50:28.589299 130369540136960 xla_bridge.py:622] Unable to initialize backend 'tpu': module 'jaxlib.xla_extension' has no attribute 'get_tpu_client'
+/usr/local/lib/python3.10/dist-packages/gymnasium/spaces/box.py:231: UserWarning: [33mWARN: Box low's precision lowered by casting to float32, current low.dtype=float64[0m
+  gym.logger.warn(
+/usr/local/lib/python3.10/dist-packages/gymnasium/spaces/box.py:297: UserWarning: [33mWARN: Box high's precision lowered by casting to float32, current high.dtype=float64[0m
+  gym.logger.warn(
+(256, 17)
+(256, 6)
+Finished loading dataset
+  0%|▏                                                                                                                      | 16/10000 [00:00<01:55, 86.40it/s]
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 579.89it/s]
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:16, 557.97it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 50000
+Step 50000 79.73510455776709
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:16, 559.78it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 100000
+Step 100000 98.08526255223208
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 562.94it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 150000
+Step 150000 102.08085783521125
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 567.72it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 200000
+Step 200000 97.62930536788062
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:16, 561.84it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 250000
+Step 250000 102.3780602915979
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 568.18it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 300000
+Step 300000 104.66951855003693
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 575.13it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 350000
+Step 350000 106.96017457020002
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 569.20it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 400000
+Step 400000 103.07618715108575
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 580.01it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 450000
+Step 450000 103.12890838898109
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 578.31it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 500000
+Step 500000 105.1026112278151
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:13, 688.39it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 550000
+Step 550000 102.13731297796471
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:14, 622.47it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 600000
+Step 600000 78.99112444613311
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 567.59it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 650000
+Step 650000 92.56696226401097
+  4%|████▌                                                                                                                | 394/10000 [00:00<00:15, 605.96it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 700000
+Step 700000 99.80200887253112
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 584.11it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 750000
+Step 750000 33.711441740759994
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 578.18it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 800000
+Step 800000 98.90776214528435
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 597.28it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 850000
+Step 850000 101.68658135644381
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 592.61it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 900000
+Step 900000 100.63069535386634
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 588.26it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 950000
+Step 950000 103.63097120984544
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1000000/1000000 [1:43:18<00:00, 161.33it/s]
+Saving to: ./tmp/EP/videos/walker2d-medium-replay-v2/3/0.5 1000000
+Step 1000000 103.06814513286454
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 592.55it/s]
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 592.95it/s]
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 578.50it/s]
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 579.59it/s]
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 580.84it/s]
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 589.91it/s]
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:14, 604.05it/s]
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 595.43it/s]
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:15, 591.77it/s]
+ 10%|███████████▌                                                                                                        | 1000/10000 [00:01<00:14, 600.37it/s]
+[34m[1mwandb[0m: [33mWARNING[0m Step cannot be set when using tensorboard syncing. Please use `run.define_metric(...)` to define a custom metric to log your step values.

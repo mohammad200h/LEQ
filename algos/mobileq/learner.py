@@ -7,7 +7,6 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 import optax
-import gym
 import flax.linen as nn
 from functools import partial
 

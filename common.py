@@ -3,7 +3,6 @@ import os
 from typing import Any, Callable, Dict, Optional, Sequence, Tuple
 
 import numpy as np
-import gym
 import flax
 import flax.linen as nn
 import jax
