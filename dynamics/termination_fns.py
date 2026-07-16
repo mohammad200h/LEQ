@@ -97,6 +97,15 @@ def termination_fn_walker2d(obs, act, next_obs):
     return done
 
 
+def termination_fn_mountaincar(obs, act, next_obs):
+    assert len(obs.shape) == len(next_obs.shape) == len(act.shape) == 2
+
+    # Goal flag on MountainCarContinuous-v0: position >= 0.45
+    done = next_obs[:, 0] >= 0.45
+    done = done[:, None]
+    return done
+
+
 def termination_fn_point2denv(obs, act, next_obs):
     assert len(obs.shape) == len(next_obs.shape) == len(act.shape) == 2
 
@@ -248,6 +257,8 @@ def get_termination_fn(task):
         return termination_fn_ant
     elif "walker2d" in task:
         return termination_fn_walker2d
+    elif "mountaincar" in task:
+        return termination_fn_mountaincar
     elif "point2denv" in task:
         return termination_fn_point2denv
     elif "point2dwallenv" in task:

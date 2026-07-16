@@ -3,7 +3,8 @@ tqdm
 absl-py
 ml_collections
 tensorboardX
-wandb
+wandb>=0.22.3
+dropbox
 orbax-checkpoint==0.2.3
 gymnasium[mujoco]>=1.0.0
 gymnasium-robotics>=1.3.0

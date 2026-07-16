@@ -32,6 +32,15 @@ RUN python3 -m pip install --upgrade pip setuptools wheel \
 
 WORKDIR /workspace
 
+
+
+RUN python3 -m pip install --upgrade pip setuptools wheel \
+    && python3 -m pip install "gymnasium[mujoco]>=1.0.0" "gymnasium-robotics>=1.3.0" "mujoco>=3.0.0" h5py \
+    && python3 -c "import mujoco; import gymnasium; print('mujoco', mujoco.__version__, 'gymnasium', gymnasium.__version__)"
+
+###### Data Collection #######
+RUN python3 -m pip install pynput pygame
+
 #####OFFLINE RL KIT INSTALLATION #########
 ARG OFFLINE_RL_KIT_CACHEBUST
 RUN cd /workspace && \
@@ -39,6 +48,11 @@ RUN cd /workspace && \
     rm -rf OfflineRL-Kit && \
     git clone --branch bringing_it_up_to_date https://github.com/mohammad200h/OfflineRL-Kit.git && \
     cd OfflineRL-Kit && pip install -e .
+
+# W&B >=0.22.3 accepts modern wandb_v1_ API keys (older SDKs require 40-char keys).
+# Install after OfflineRL-Kit so nothing downgrades them.
+RUN python3 -m pip install --upgrade "wandb>=0.22.3" dropbox \
+    && python3 -c "import wandb, dropbox; assert tuple(map(int, wandb.__version__.split('.')[:2])) >= (0, 22), wandb.__version__; print('wandb', wandb.__version__, 'dropbox', dropbox.__version__)"
 
 # Load WANDB_API_KEY from mounted .env on interactive shells
 RUN printf '%s\n' \

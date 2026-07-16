@@ -1,0 +1,15 @@
+I0715 14:40:13.544557 134832249380864 acceleratesupport.py:24] No OpenGL_accelerate module loaded: No module named 'OpenGL_accelerate'
+AdroitHandRelocateDense-v1, AdroitHandHammerDense-v1, AdroitHandDoorDense-v1 environment's reward functions were updated in v1.2.1 without an environment version update. Therefore, use gymnasium-robotics==1.2.0 for v1 reproducibility or use v2 in gymnasium-robotics>=1.4.3. See https://github.com/Farama-Foundation/Gymnasium-Robotics/pull/220 for more details
+2 1
+Traceback (most recent call last):
+  File "/workspace/LEQ/train/train_LEQ.py", line 417, in <module>
+    app.run(main)
+  File "/usr/local/lib/python3.10/dist-packages/absl/app.py", line 410, in run
+    _run_main(main, args)
+  File "/usr/local/lib/python3.10/dist-packages/absl/app.py", line 355, in _run_main
+    sys.exit(main(argv))
+  File "/workspace/LEQ/train/train_LEQ.py", line 212, in main
+    termination_fn = get_termination_fn(task=FLAGS.env_name)
+  File "/workspace/LEQ/dynamics/termination_fns.py", line 272, in get_termination_fn
+    raise jnp.zeros
+TypeError: exceptions must derive from BaseException
