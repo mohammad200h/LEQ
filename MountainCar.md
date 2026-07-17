@@ -9,10 +9,12 @@ Task name: `mountaincar-human-v0` (maps to `MountainCarContinuous-v0`)
 
 `run_dynamics.py` calls `make_env(task)` → `env.get_dataset()`, which reads:
 
-| Piece | Value for MountainCar |
-| --- | --- |
+
+| Piece     | Value for MountainCar                     |
+| --------- | ----------------------------------------- |
 | Directory | `$D4RL_DATASET_DIR` or `~/.d4rl/datasets` |
-| File | `mountain_car_human.hdf5` |
+| File      | `mountain_car_human.hdf5`                 |
+
 
 Dropbox demos are downloaded to
 `data_colllection/demostrations/mountain_car_human.hdf5`. Use
@@ -62,18 +64,20 @@ By default this symlinks:
 
 Useful flags:
 
-| Flag | Meaning |
-| --- | --- |
-| `--copy` | Copy instead of symlink |
-| `--force` | Replace an existing destination |
+
+| Flag                 | Meaning                                          |
+| -------------------- | ------------------------------------------------ |
+| `--copy`             | Copy instead of symlink                          |
+| `--force`            | Replace an existing destination                  |
 | `--dataset-dir PATH` | Override cache dir (same as `$D4RL_DATASET_DIR`) |
-| `--source PATH` | Non-default demo HDF5 |
+| `--source PATH`      | Non-default demo HDF5                            |
+
 
 ## 3. Train dynamics
 
 ```bash
 cd /workspace/OfflineRL-Kit
-python3 run_example/run_dynamics.py --task mountaincar-human-v0 --seed 1
+python3 run_example/run_dynamics.py --task mountaincar-human-v0 --seed 1 --track
 ```
 
 Optional: `--track` for W&B.
@@ -104,8 +108,9 @@ Optional flags match the other LEQ runs (e.g. `--wandb_key`, `--save_dir`).
 
 ## Checklist
 
-1. `download_from_dropbox.py` → demos HDF5 present  
-2. `install_mountain_car_dataset.py` → file visible under `~/.d4rl/datasets/`  
-3. `copy_dynamic_script_to_offline_rl.sh` → `run_example/run_dynamics.py`  
-4. `python3 run_example/run_dynamics.py --task mountaincar-human-v0 --seed 1`  
+1. `download_from_dropbox.py` → demos HDF5 present
+2. `install_mountain_car_dataset.py` → file visible under `~/.d4rl/datasets/`
+3. `copy_dynamic_script_to_offline_rl.sh` → `run_example/run_dynamics.py`
+4. `python3 run_example/run_dynamics.py --task mountaincar-human-v0 --seed 1`
 5. `PYTHONPATH='.' python3 train/train_LEQ.py --env_name=mountaincar-human-v0 --expectile 0.5 --seed 1`
+

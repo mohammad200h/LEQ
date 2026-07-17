@@ -1,0 +1,31 @@
+task: walker2d-medium-replay-v2
+seed: 3
+output_model_name: dynamics_walker2d_ep250_lr1e-3_wd2x_ens7e5_h200x4_hr0p2_bs256_lv0p01_seed3
+dynamics_max_epochs: 250
+dynamics_lr: 0.001
+dynamics_weight_decay_scale: 2.0
+dynamics_weight_decay:
+- 5.0e-05
+- 0.0001
+- 0.00015
+- 0.00015
+- 0.0002
+n_ensemble: 7
+n_elites: 5
+dynamics_hidden_dims:
+- 200
+- 200
+- 200
+- 200
+holdout_ratio: 0.2
+dynamics_batch_size: 256
+logvar_loss_coef: 0.01
+early_stopping: true
+max_epochs_since_update: 10
+eval_num_trajs: 50
+eval_fixed_trajs: true
+eval_freq: 10
+holdout_loss: 0.17973586916923523
+wandb:
+  project: dynamics_walker2d_hyperparameter_search
+  name: dynamics_walker2d_ep250_lr1e-3_wd2x_ens7e5_h200x4_hr0p2_bs256_lv0p01_seed3

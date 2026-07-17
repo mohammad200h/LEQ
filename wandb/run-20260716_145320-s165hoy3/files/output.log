@@ -1,0 +1,27 @@
+I0716 14:53:21.636226 130758473277440 acceleratesupport.py:24] No OpenGL_accelerate module loaded: No module named 'OpenGL_accelerate'
+AdroitHandRelocateDense-v1, AdroitHandHammerDense-v1, AdroitHandDoorDense-v1 environment's reward functions were updated in v1.2.1 without an environment version update. Therefore, use gymnasium-robotics==1.2.0 for v1 reproducibility or use v2 in gymnasium-robotics>=1.4.3. See https://github.com/Farama-Foundation/Gymnasium-Robotics/pull/220 for more details
+2 1
+TESTING SEEDS!
+load datafile: 100%|██████████████████████████████████████████████████████████████████████████████████████| 6/6 [00:00<00:00, 1739.53it/s]
+load datafile: 100%|██████████████████████████████████████████████████████████████████████████████████████| 6/6 [00:00<00:00, 2765.17it/s]
+Reward scaler 1.0 0.0
+I0716 14:53:22.160321 130758473277440 xla_bridge.py:622] Unable to initialize backend 'rocm': NOT_FOUND: Could not find registered platform with name: "rocm". Available platform names are: CUDA Interpreter
+I0716 14:53:22.161072 130758473277440 xla_bridge.py:622] Unable to initialize backend 'tpu': module 'jaxlib.xla_extension' has no attribute 'get_tpu_client'
+(256, 2)
+(256, 1)
+Finished loading dataset
+ 10%|████▉                                             | 999/10000 [00:00<00:07, 1161.65it/s]
+  2%|▉                                            | 21477/1000000 [02:26<1:51:34, 146.17it/s]
+Traceback (most recent call last):
+  File "/workspace/LEQ/train/train_LEQ.py", line 436, in <module>
+    app.run(main)
+  File "/usr/local/lib/python3.10/dist-packages/absl/app.py", line 410, in run
+    _run_main(main, args)
+  File "/usr/local/lib/python3.10/dist-packages/absl/app.py", line 355, in _run_main
+    sys.exit(main(argv))
+  File "/workspace/LEQ/train/train_LEQ.py", line 381, in main
+    update_info = agent.update(data_batch, model_batch, FLAGS.model_batch_ratio)
+  File "/workspace/LEQ/algos/leq/learner.py", line 446, in update
+    new_rng, new_actor, new_critic, new_target_critic, info = _update_jit(
+  File "<string>", line 1, in <lambda>
+KeyboardInterrupt

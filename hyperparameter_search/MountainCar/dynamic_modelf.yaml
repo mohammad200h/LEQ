@@ -1,0 +1,67 @@
+# Hyperparameter search for MountainCar ensemble dynamics.
+#
+# Every list below is a search axis (cartesian product). Scalars are fine too.
+# Combos with n_elites > n_ensemble are skipped automatically.
+#
+# Selection metric: elite holdout loss from EnsembleDynamics.train (lower better).
+# Demo delta eval is for monitoring only — not used to pick the winner.
+#
+# This file keeps the focused LR × WD × seed grid. For architecture / train
+# internals as well, use dynamic_modelf_comprehensive.yaml (start with --seed 1).
+#
+# Usage (from OfflineRL-Kit, after copying run_dynamics.py):
+#   python3 ../LEQ/hyperparameter_search/MountainCar/dynamic_model_search.py
+#   python3 ../LEQ/hyperparameter_search/MountainCar/dynamic_model_search.py --seed 2
+#   python3 ../LEQ/hyperparameter_search/MountainCar/dynamic_model_search.py \
+#     --config ../LEQ/hyperparameter_search/MountainCar/dynamic_modelf_comprehensive.yaml --seed 1
+
+task: mountaincar-human-v0
+
+# Fallback when --seed is unset and seeds list is absent.
+seed: 1
+
+# Multi-seed confirmation around the chosen schedule.
+seeds: [1, 2, 3, 4, 5]
+
+output_model_name_prefix: dynamics_mountaincar
+
+# --- Optimization schedule ---------------------------------------------------
+
+# Cap near the ~200-epoch optimum (early stopping may stop sooner).
+dynamics_max_epochs: [250]
+
+# LR × weight-decay scale grid (default WD × scale).
+dynamics_lr: [0.001, 0.0003]
+dynamics_weight_decay_scale: [1.0, 2.0]
+# Base per-layer decay when scale=1 (OfflineRL-Kit default for 4 hidden layers).
+# Automatically resampled when dynamics_hidden_dims depth changes (need len = depth+1).
+dynamics_weight_decay_base: [2.5e-5, 5.0e-5, 7.5e-5, 7.5e-5, 1.0e-4]
+
+# Stop when holdout stops improving — this is the checkpoint selector.
+early_stopping: true
+max_epochs_since_update: 10
+
+# --- Ensemble architecture (defaults; expand in comprehensive yaml) ----------
+
+n_ensemble: [7]
+n_elites: [5]
+
+# One architecture, or a list of architectures to search.
+dynamics_hidden_dims:
+  - [200, 200, 200, 200]
+
+# --- Train / validation internals (defaults; expand in comprehensive yaml) ---
+
+holdout_ratio: [0.2]
+dynamics_batch_size: [256]
+logvar_loss_coef: [0.01]
+
+# --- Demo delta eval (logging only) ------------------------------------------
+
+eval_num_trajs: 50
+eval_fixed_trajs: true
+eval_freq: 10
+
+wandb:
+  project: dynamics_mountaincar_hyperparameter_search
+  # per-run name encodes all searched knobs (see build_run_name)

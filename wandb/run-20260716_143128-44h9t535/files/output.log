@@ -1,0 +1,38 @@
+I0716 14:31:29.896868 135251097989120 acceleratesupport.py:24] No OpenGL_accelerate module loaded: No module named 'OpenGL_accelerate'
+AdroitHandRelocateDense-v1, AdroitHandHammerDense-v1, AdroitHandDoorDense-v1 environment's reward functions were updated in v1.2.1 without an environment version update. Therefore, use gymnasium-robotics==1.2.0 for v1 reproducibility or use v2 in gymnasium-robotics>=1.4.3. See https://github.com/Farama-Foundation/Gymnasium-Robotics/pull/220 for more details
+2 1
+TESTING SEEDS!
+load datafile: 100%|██████████████████████████████████████████████████████████████████████████████████████| 6/6 [00:00<00:00, 2463.37it/s]
+load datafile: 100%|██████████████████████████████████████████████████████████████████████████████████████| 6/6 [00:00<00:00, 2909.01it/s]
+Reward scaler 1.0 0.0
+I0716 14:31:30.405364 135251097989120 xla_bridge.py:622] Unable to initialize backend 'rocm': NOT_FOUND: Could not find registered platform with name: "rocm". Available platform names are: Interpreter CUDA
+I0716 14:31:30.406065 135251097989120 xla_bridge.py:622] Unable to initialize backend 'tpu': module 'jaxlib.xla_extension' has no attribute 'get_tpu_client'
+(256, 2)
+(256, 1)
+Finished loading dataset
+ 10%|█████████▍                                                                                     | 999/10000 [00:00<00:07, 1283.57it/s]
+ 10%|█████████▍                                                                                     | 999/10000 [00:00<00:04, 2001.94it/s]
+ 10%|█████████▍                                                                                     | 999/10000 [00:00<00:04, 1970.41it/s]
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 50000
+Step 50000 22.480393840560076
+ 10%|█████████▍                                                                                     | 999/10000 [00:00<00:04, 2050.10it/s]
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 100000
+Step 100000 23.404562834893987
+ 10%|█████████▍                                                                                     | 999/10000 [00:00<00:04, 1883.08it/s]
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 150000
+Step 150000 25.100519028170083
+ 22%|███████████████████▎                                                                     | 217389/1000000 [21:18<1:16:41, 170.08it/s]
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 200000
+Step 200000 23.520322704533406
+Traceback (most recent call last):
+  File "/workspace/LEQ/train/train_LEQ.py", line 417, in <module>
+  File "/usr/local/lib/python3.10/dist-packages/absl/app.py", line 410, in run
+    _run_main(main, args)
+  File "/usr/local/lib/python3.10/dist-packages/absl/app.py", line 355, in _run_main
+    sys.exit(main(argv))
+  File "/workspace/LEQ/train/train_LEQ.py", line 373, in main
+    rollout["masks"],
+  File "/workspace/LEQ/algos/leq/learner.py", line 446, in update
+    new_rng, new_actor, new_critic, new_target_critic, info = _update_jit(
+  File "<string>", line 1, in <lambda>
+KeyboardInterrupt

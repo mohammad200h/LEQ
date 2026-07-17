@@ -54,7 +54,12 @@ flags.DEFINE_integer("layer_size", 256, "layer size")
 flags.DEFINE_integer("log_interval", 10000, "Logging interval.")
 flags.DEFINE_integer("eval_interval", 50000, "Eval interval.")
 flags.DEFINE_integer("save_interval", 100000, "Save interval.")
-flags.DEFINE_integer("video_interval", 50000, "Eval interval.")
+flags.DEFINE_integer(
+    "video_interval",
+    50000,
+    "Save an eval mp4 (first eval env) every N training steps. "
+    "Set 0 to disable video recording.",
+)
 flags.DEFINE_integer("batch_size", 256, "Mini batch size.")
 flags.DEFINE_float("discount", 0.997, "discount")
 flags.DEFINE_float("lamb", 0.95, "lambda for GAE")
@@ -257,7 +262,10 @@ def main(_):
 
         eval_envs = []
         for i in range(FLAGS.eval_episodes):
-            env = make_env(FLAGS.env_name)
+            # First env uses rgb_array so we can RecordVideo-style dumps
+            # (same idea as swm MountainCar PPO eval env).
+            render_mode = "rgb_array" if i == 0 else None
+            env = make_env(FLAGS.env_name, render_mode=render_mode)
             env = wrappers.EpisodeMonitor(env)
             env = wrappers.SinglePrecision(env)
             seed = FLAGS.seed + i
@@ -376,8 +384,18 @@ def main(_):
             log_info(run, i, update_info, "training")
 
         if i % FLAGS.eval_interval == 0:
+            record_video = (
+                FLAGS.video_interval > 0 and i % FLAGS.video_interval == 0
+            )
             eval_stats = evaluate(
-                FLAGS.seed, agent, eval_envs, video_path, i, model_eval, debug=True
+                FLAGS.seed,
+                agent,
+                eval_envs,
+                video_path,
+                i,
+                model_eval,
+                debug=True,
+                record_video=record_video,
             )  # debug=FLAGS.debug)
             if raw_dataset is not None:
                 obs = jax.device_put(raw_dataset["observations"][::10])
@@ -389,8 +407,18 @@ def main(_):
                 )
 
             print("Step", i, eval_stats["return"])
+            video_file = eval_stats.pop("video_file", None)
             eval_stats = {f"average_{k}s": v for (k, v) in eval_stats.items()}
             log_info(run, i, eval_stats, "evaluation")
+            if video_file is not None and run is not None:
+                run.log(
+                    {
+                        "evaluation/step": i,
+                        "evaluation/video": wandb.Video(
+                            video_file, fps=30, format="mp4"
+                        ),
+                    }
+                )
 
         if i % FLAGS.save_interval == 0:
             params = {"actor": agent.actor.params, "critic": agent.critic.params}
@@ -406,11 +434,23 @@ def main(_):
             video_path,
             1000000,
             model_eval,
+            record_video=(FLAGS.video_interval > 0 and i == 0),
         )
+        video_file = eval_stats.pop("video_file", None)
         score.append(eval_stats["return"])
         length.append(eval_stats["length"])
-    run.log({f"evaluation/final_score": np.mean(score)}, step=1000000)
-    run.log({f"evaluation/final_length": np.mean(length)}, step=1000000)
+        if video_file is not None and run is not None:
+            run.log(
+                {
+                    "evaluation/step": 1000000,
+                    "evaluation/video": wandb.Video(
+                        video_file, fps=30, format="mp4"
+                    ),
+                }
+            )
+    if run is not None:
+        run.log({f"evaluation/final_score": np.mean(score)}, step=1000000)
+        run.log({f"evaluation/final_length": np.mean(length)}, step=1000000)
 
 
 if __name__ == "__main__":

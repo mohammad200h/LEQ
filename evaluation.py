@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import os
 import jax
@@ -9,6 +9,7 @@ import gymnasium as gym
 import numpy as np
 import copy
 import time
+import cv2
 from tqdm import tqdm
 from functools import partial
 
@@ -29,6 +30,39 @@ def _step_env(env, action):
         return obs, reward, terminated or truncated, info
     obs, reward, done, info = result
     return obs, reward, done, info
+
+
+def _try_render(env) -> Optional[np.ndarray]:
+    """Return an RGB frame if the env supports rendering, else None."""
+    try:
+        frame = env.render()
+    except Exception:
+        return None
+    if frame is None:
+        return None
+    frame = np.asarray(frame)
+    if frame.ndim != 3 or frame.shape[-1] not in (3, 4):
+        return None
+    if frame.shape[-1] == 4:
+        frame = frame[..., :3]
+    return frame
+
+
+def _write_video(path: str, frames: List[np.ndarray], fps: int = 30) -> None:
+    if not frames:
+        return
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    height, width = frames[0].shape[:2]
+    writer = cv2.VideoWriter(
+        path,
+        cv2.VideoWriter_fourcc(*"mp4v"),
+        fps,
+        (width, height),
+    )
+    for frame in frames:
+        writer.write(cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
+    writer.release()
+    print(f"Saved eval video: {path} ({len(frames)} frames)")
 
 
 @jax.jit
@@ -64,7 +98,15 @@ def evaluate(
     step: int,
     model_eval=None,
     debug=False,
+    record_video: bool = False,
+    video_fps: int = 30,
 ) -> Dict[str, float]:
+    """Roll out the agent in real envs; optionally save an mp4 of env 0.
+
+    Video recording mirrors Gymnasium ``RecordVideo`` used in the PPO MountainCar
+    expert script: ``render_mode='rgb_array'`` on the first eval env, frames
+    captured each step, written under ``video_path``.
+    """
     stats = {"return": [], "length": []}
     states, actions, rewards, observations = [], [], [], []
 
@@ -72,6 +114,8 @@ def evaluate(
     num_episodes = len(envs)
     s = time.time()
     key = jax.device_put(PRNGKey(seed))
+    video_frames: List[np.ndarray] = []
+    record_video = bool(record_video and video_path)
     for env in envs:
         _observations.append(_reset_obs(env))
         observations.append([])
@@ -79,6 +123,10 @@ def evaluate(
         states.append([])
         actions.append([])
         rewards.append([])
+    if record_video and envs:
+        frame = _try_render(envs[0])
+        if frame is not None:
+            video_frames.append(frame)
     # print(observations)
     _observations = np.array(_observations)
 
@@ -111,6 +159,10 @@ def evaluate(
             obs, reward, done, info = _step_env(envs[i], _actions[i])
             _observations[i] = obs
             rewards[i].append(reward)
+            if record_video and i == 0:
+                frame = _try_render(envs[i])
+                if frame is not None:
+                    video_frames.append(frame)
             if done:
                 dones[i] = True
                 stats["return"].append(info["episode"]["return"])
@@ -123,6 +175,12 @@ def evaluate(
     states = np.concatenate(states, axis=0)
     actions = np.concatenate(actions, axis=0)
     rewards = np.concatenate(rewards, axis=0)
+
+    if record_video:
+        out_file = os.path.join(video_path, f"eval-{step}.mp4")
+        _write_video(out_file, video_frames, fps=video_fps)
+        if video_frames:
+            stats["video_file"] = out_file
 
     if debug:
         _states, _actions = jax.device_put(states), jax.device_put(actions)

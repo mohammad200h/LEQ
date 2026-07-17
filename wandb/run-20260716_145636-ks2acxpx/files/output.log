@@ -1,0 +1,127 @@
+I0716 14:56:37.546417 129169860923392 acceleratesupport.py:24] No OpenGL_accelerate module loaded: No module named 'OpenGL_accelerate'
+AdroitHandRelocateDense-v1, AdroitHandHammerDense-v1, AdroitHandDoorDense-v1 environment's reward functions were updated in v1.2.1 without an environment version update. Therefore, use gymnasium-robotics==1.2.0 for v1 reproducibility or use v2 in gymnasium-robotics>=1.4.3. See https://github.com/Farama-Foundation/Gymnasium-Robotics/pull/220 for more details
+2 1
+TESTING SEEDS!
+load datafile: 100%|█████████████████████████████████████████| 6/6 [00:00<00:00, 2466.03it/s]
+load datafile: 100%|█████████████████████████████████████████| 6/6 [00:00<00:00, 2769.13it/s]
+Reward scaler 1.0 0.0
+I0716 14:56:38.057900 129169860923392 xla_bridge.py:622] Unable to initialize backend 'rocm': NOT_FOUND: Could not find registered platform with name: "rocm". Available platform names are: CUDA Interpreter
+I0716 14:56:38.058578 129169860923392 xla_bridge.py:622] Unable to initialize backend 'tpu': module 'jaxlib.xla_extension' has no attribute 'get_tpu_client'
+(256, 2)
+(256, 1)
+Finished loading dataset
+ 10%|████▉                                             | 999/10000 [00:00<00:07, 1260.78it/s]
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:23, 382.21it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-50000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 50000
+Step 50000 22.74020659137166
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:22, 399.42it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-100000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 100000
+Step 100000 23.06812142758635
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:21, 409.71it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-150000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 150000
+Step 150000 23.63972167228822
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:21, 412.67it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-200000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 200000
+Step 200000 18.81112090508075
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:21, 418.48it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-250000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 250000
+Step 250000 20.940871417596625
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:21, 421.62it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-300000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 300000
+Step 300000 22.34459647639171
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:21, 409.21it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-350000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 350000
+Step 350000 22.99422504158886
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:21, 411.08it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-400000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 400000
+Step 400000 21.76038932506129
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:21, 415.67it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-450000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 450000
+Step 450000 22.512462151767167
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:21, 409.42it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-500000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 500000
+Step 500000 24.117680468690544
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:22, 404.07it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-550000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 550000
+Step 550000 22.66259090985218
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:21, 415.92it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-600000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 600000
+Step 600000 24.01084336063338
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:21, 417.72it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-650000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 650000
+Step 650000 22.529341875016783
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:22, 405.88it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-700000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 700000
+Step 700000 23.35856413253746
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:21, 416.47it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-750000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 750000
+Step 750000 23.557890760386766
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:21, 426.60it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-800000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 800000
+Step 800000 23.904598356097434
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:22, 405.12it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-850000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 850000
+Step 850000 23.127760853389322
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:21, 424.90it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-900000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 900000
+Step 900000 23.16597926919087
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:23, 382.46it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-950000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 950000
+Step 950000 23.13368027298564
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:21, 411.89it/s]
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-1000000.mp4 (1000 frames)
+Saving to: ./tmp/EP/videos/mountaincar-human-v0/3/0.5 1000000
+Step 1000000 23.10244727956637
+100%|███████████████████████████████████████████| 1000000/1000000 [1:40:12<00:00, 166.31it/s]
+ 10%|███████▊                                                                      | 999/10000 [00:02<00:19, 456.85it/s]
+Saved eval video: ./tmp/EP/videos/mountaincar-human-v0/3/0.5/eval-1000000.mp4 (1000 frames)
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.
+ 10%|███████▋                                                                     | 999/10000 [00:00<00:04, 1972.76it/s]
+ 10%|███████▋                                                                     | 999/10000 [00:00<00:04, 1887.82it/s]
+ 10%|███████▋                                                                     | 999/10000 [00:00<00:04, 2032.20it/s]
+ 10%|███████▋                                                                     | 999/10000 [00:00<00:04, 1976.10it/s]
+ 10%|███████▋                                                                     | 999/10000 [00:00<00:05, 1798.00it/s]
+ 10%|███████▋                                                                     | 999/10000 [00:00<00:05, 1590.07it/s]
+ 10%|███████▋                                                                     | 999/10000 [00:00<00:05, 1648.19it/s]
+ 10%|███████▋                                                                     | 999/10000 [00:00<00:05, 1639.79it/s]
+ 10%|███████▋                                                                     | 999/10000 [00:00<00:05, 1633.06it/s]
+[34m[1mwandb[0m: [33mWARNING[0m Step cannot be set when using tensorboard syncing. Please use `run.define_metric(...)` to define a custom metric to log your step values.
