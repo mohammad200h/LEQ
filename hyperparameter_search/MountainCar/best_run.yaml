@@ -20,12 +20,16 @@ dynamics_hidden_dims:
 holdout_ratio: 0.2
 dynamics_batch_size: 256
 logvar_loss_coef: 0.01
+reward_mode: twohot
+num_reward_bins: 255
+reward_loss_weight: 1.0
+dynamics_loss_weight: 1.0
 early_stopping: true
 max_epochs_since_update: 10
 eval_num_trajs: 50
 eval_fixed_trajs: true
 eval_freq: 10
-holdout_loss: 4.213635444641113
+holdout_loss: 0.04007335007190704
 wandb:
   project: dynamics_mountaincar_hyperparameter_search
   name: dynamics_mountaincar_ep250_lr1e-3_wd2x_ens7e5_h200x4_hr0p2_bs256_lv0p01_seed3

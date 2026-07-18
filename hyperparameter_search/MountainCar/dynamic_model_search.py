@@ -198,6 +198,10 @@ def run_dynamics(
     holdout_ratio: float,
     dynamics_batch_size: int,
     logvar_loss_coef: float,
+    reward_mode: str,
+    num_reward_bins: int,
+    reward_loss_weight: float,
+    dynamics_loss_weight: float,
     eval_num_trajs: int,
     eval_fixed_trajs: bool,
     eval_freq: int,
@@ -239,6 +243,14 @@ def run_dynamics(
         str(dynamics_batch_size),
         '--logvar-loss-coef',
         str(logvar_loss_coef),
+        '--reward-mode',
+        reward_mode,
+        '--num-reward-bins',
+        str(num_reward_bins),
+        '--reward-loss-weight',
+        str(reward_loss_weight),
+        '--dynamics-loss-weight',
+        str(dynamics_loss_weight),
         '--eval-num-trajs',
         str(eval_num_trajs),
         '--eval-freq',
@@ -263,7 +275,8 @@ def run_dynamics(
         f'lr={dynamics_lr} wd={dynamics_weight_decay} '
         f'ens={n_ensemble}/{n_elites} hidden={dynamics_hidden_dims} '
         f'holdout={holdout_ratio} bs={dynamics_batch_size} '
-        f'logvar={logvar_loss_coef} ({run_name}) ==='
+        f'logvar={logvar_loss_coef} reward={reward_mode}/bins={num_reward_bins} '
+        f'rw={reward_loss_weight} dw={dynamics_loss_weight} ({run_name}) ==='
     )
     print('cwd:', OFFLINERL_ROOT)
     print(' '.join(cmd))
@@ -365,6 +378,10 @@ def main(argv: list[str] | None = None) -> None:
     logvar_list = [
         float(v) for v in iter_search_values(cfg.get('logvar_loss_coef', 0.01))
     ]
+    reward_mode = str(cfg.get('reward_mode', 'twohot'))
+    num_reward_bins = int(cfg.get('num_reward_bins', 255))
+    reward_loss_weight = float(cfg.get('reward_loss_weight', 1.0))
+    dynamics_loss_weight = float(cfg.get('dynamics_loss_weight', 1.0))
     max_epochs_since_update = resolve_max_epochs_since_update(cfg)
     early_stopping = cfg.get('early_stopping', True)
     eval_num_trajs = int(cfg.get('eval_num_trajs', 10))
@@ -405,6 +422,9 @@ def main(argv: list[str] | None = None) -> None:
         f'holdout_ratio={holdout_ratio_list}, '
         f'dynamics_batch_size={batch_size_list}, '
         f'logvar_loss_coef={logvar_list}, '
+        f'reward_mode={reward_mode}, num_reward_bins={num_reward_bins}, '
+        f'reward_loss_weight={reward_loss_weight}, '
+        f'dynamics_loss_weight={dynamics_loss_weight}, '
         f'early_stopping={cfg.get("early_stopping")}, '
         f'max_epochs_since_update={max_epochs_since_update}, '
         f'eval_num_trajs={eval_num_trajs}, '
@@ -462,6 +482,10 @@ def main(argv: list[str] | None = None) -> None:
             holdout_ratio=holdout_ratio,
             dynamics_batch_size=dynamics_batch_size,
             logvar_loss_coef=logvar_loss_coef,
+            reward_mode=reward_mode,
+            num_reward_bins=num_reward_bins,
+            reward_loss_weight=reward_loss_weight,
+            dynamics_loss_weight=dynamics_loss_weight,
             eval_num_trajs=eval_num_trajs,
             eval_fixed_trajs=eval_fixed_trajs,
             eval_freq=eval_freq,
@@ -492,6 +516,10 @@ def main(argv: list[str] | None = None) -> None:
             'holdout_ratio': holdout_ratio,
             'dynamics_batch_size': dynamics_batch_size,
             'logvar_loss_coef': logvar_loss_coef,
+            'reward_mode': reward_mode,
+            'num_reward_bins': num_reward_bins,
+            'reward_loss_weight': reward_loss_weight,
+            'dynamics_loss_weight': dynamics_loss_weight,
             'early_stopping': early_stopping,
             'max_epochs_since_update': max_epochs_since_update,
             'eval_num_trajs': eval_num_trajs,

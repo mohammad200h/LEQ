@@ -141,6 +141,10 @@ def make_env_and_dataset(env_name, seed, discount, model=None):
         dataset.rewards -= 1.0
         reward_scale, reward_bias = 1.0, -1.0
 
+    elif "mountaincar" in env_name:
+        dataset.rewards = dataset.rewards / 100.0
+        reward_scale, reward_bias = 1.0, 0.0
+
     elif "halfcheetah" in env_name or "walker2d" in env_name or "hopper" in env_name:
         if "random" in env_name:
             # For random datasets, use the original rewards

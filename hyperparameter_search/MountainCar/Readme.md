@@ -73,10 +73,16 @@ the **cartesian product** of all axes and skips combos with `n_elites > n_ensemb
 | Holdout ratio | `holdout_ratio` | `--holdout-ratio` | Fraction of data for validation / elite pick (capped at 1000 samples) |
 | Batch size | `dynamics_batch_size` | `--dynamics-batch-size` | Mini-batch size inside dynamics `learn()` |
 | Log-var coef | `logvar_loss_coef` | `--logvar-loss-coef` | Weight on Gaussian log-variance regularizer |
+| Reward mode | `reward_mode` | `--reward-mode` | `twohot` (symlog + categorical) or `gaussian_joint` (legacy) |
+| Reward bins | `num_reward_bins` | `--num-reward-bins` | Symlog bin count for twohot reward head |
+| Reward loss wt | `reward_loss_weight` | `--reward-loss-weight` | CE weight on reward head (twohot mode) |
+| Dynamics loss wt | `dynamics_loss_weight` | `--dynamics-loss-weight` | Weight on Δs Gaussian loss (twohot mode) |
 | Seeds | `seeds` / `seed` | `--seed` | Reproducibility; CLI `--seed` overrides YAML |
 
 Also fixed from YAML (not usually gridded): `early_stopping`,
-`max_epochs_since_update`, `eval_num_trajs`, `eval_fixed_trajs`, `eval_freq`.
+`max_epochs_since_update`, `reward_mode`, `num_reward_bins`,
+`reward_loss_weight`, `dynamics_loss_weight`, `eval_num_trajs`,
+`eval_fixed_trajs`, `eval_freq`.
 
 When `dynamics_hidden_dims` depth changes, `dynamics_weight_decay_base` is
 **resampled** to length `len(hidden_dims) + 1` (required by OfflineRL-Kit), then

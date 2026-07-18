@@ -35,6 +35,11 @@ holdout_ratio: [0.1, 0.2]
 dynamics_batch_size: [128, 256]
 logvar_loss_coef: [0.01, 0.001]
 
+reward_mode: twohot
+num_reward_bins: 255
+reward_loss_weight: 1.0
+dynamics_loss_weight: 1.0
+
 eval_num_trajs: 50
 eval_fixed_trajs: true
 eval_freq: 10

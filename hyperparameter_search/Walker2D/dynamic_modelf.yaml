@@ -56,6 +56,13 @@ holdout_ratio: [0.2]
 dynamics_batch_size: [256]
 logvar_loss_coef: [0.01]
 
+# --- Reward head (symlog twohot; DreamerV3-style) --------------------------
+
+reward_mode: twohot
+num_reward_bins: 255
+reward_loss_weight: 1.0
+dynamics_loss_weight: 1.0
+
 # --- Demo delta eval (logging only) ------------------------------------------
 
 eval_num_trajs: 50
