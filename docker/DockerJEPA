@@ -42,16 +42,28 @@ RUN python3 -m pip install --upgrade pip setuptools wheel \
 ###### Data Collection #######
 RUN python3 -m pip install pynput pygame
 
-#####OFFLINE RL KIT INSTALLATION #########
-ARG OFFLINE_RL_KIT_CACHEBUST
+#####Stable World Model INSTALLATION #########
+ARG STABLE_WORLD_MODEL_CACHEBUST
 RUN cd /workspace && \
-    echo "OfflineRL-Kit cache bust: ${OFFLINE_RL_KIT_CACHEBUST}" && \
-    rm -rf OfflineRL-Kit && \
-    git clone --branch bringing_it_up_to_date https://github.com/mohammad200h/OfflineRL-Kit.git && \
-    cd OfflineRL-Kit && pip install -e .
+    echo "Stable World Model cache bust: ${STABLE_WORLD_MODEL_CACHEBUST}" && \
+    rm -rf stable-worldmodel && \
+    git clone --branch LEQ-Dev https://github.com/mohammad200h/stable-worldmodel.git && \
+    cd stable-worldmodel && pip install -e .
 
+######LEQ-DreamerV3 INSTALLATION #########
+# setup.py expects ./requirements.txt, but the repo only ships dreamerv3/requirements.txt
+RUN cd /workspace && \
+    echo "LEQ-DreamerV3 cache bust: ${STABLE_WORLD_MODEL_CACHEBUST}" && \
+    rm -rf LEQ_DV3 && \
+    git clone --branch bringing_it_up_to_data https://github.com/mohammad200h/LEQ_DV3.git && \
+    cd LEQ_DV3 && \
+    ln -sf dreamerv3/requirements.txt requirements.txt && \
+    pip install -e .
+
+###### W&B INSTALLATION #########
 # W&B >=0.22.3 accepts modern wandb_v1_ API keys (older SDKs require 40-char keys).
-# Install after OfflineRL-Kit so nothing downgrades them.
+# Install after stable-worldmodel so nothing downgrades them (also avoids a
+# typing-extensions conflict with tensorflow_probability during core deps install).
 RUN python3 -m pip install --upgrade "wandb>=0.22.3" dropbox \
     && python3 -c "import wandb, dropbox; assert tuple(map(int, wandb.__version__.split('.')[:2])) >= (0, 22), wandb.__version__; print('wandb', wandb.__version__, 'dropbox', dropbox.__version__)"
 
