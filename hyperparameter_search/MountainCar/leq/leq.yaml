@@ -1,0 +1,62 @@
+# MountainCar LEQ hyperparameter search (comprehensive grid).
+#
+# Every list below is a search axis (cartesian product). Scalars are fine too.
+#
+# Selection metric: final eval return printed by train_LEQ.py (higher better),
+# tracked separately per dynamics reward_mode (twohot vs gaussian_joint).
+# Intermediate Step returns are a fallback if final score is missing.
+#
+# WARNING: cartesian product is large and each run is ~1e6 steps. Prefer
+# trimming axes, `--seed 1`, or lowering max_steps while exploring.
+#
+# Axes (with seeds [1, 2, 3] and both reward modes):
+#   3 seeds × 3 expectile × 2 mbr × 2 rollout × 2 horizon × 2 lamb × 2 actor_lr
+#   × 1 discount × 1 batch × 2 pretrain × 2 reward_mode
+#   ≈ 1152 full-length runs.
+#
+# Prerequisites: finish ../dynamic_model/ first. That search writes
+#   best_run_twohot.yaml and best_run_gaussian_joint.yaml
+# leq_search.py loads those checkpoints via train_LEQ --load_dir
+# (no copy_best_model step required for the search itself).
+#
+# Usage (from LEQ):
+#   PYTHONPATH='.' python3 hyperparameter_search/MountainCar/leq/leq_search.py
+#   PYTHONPATH='.' python3 hyperparameter_search/MountainCar/leq/leq_search.py --seed 1
+
+env_name: mountaincar-human-v0
+seed: 1
+seeds: [1, 2, 3]
+
+output_model_name_prefix: leq_mountaincar
+
+# Frozen dynamics winners from ../dynamic_model/ (one checkpoint per head).
+reward_mode: [twohot, gaussian_joint]
+
+expectile: [0.3, 0.5, 0.7]
+model_batch_ratio: [0.1, 0.25]
+rollout_length: [1, 5]
+horizon_length: [5, 10]
+lamb: [0.9, 0.95]
+discount: [0.997]
+batch_size: [256]
+actor_lr: [1.0e-5, 3.0e-5]
+value_lr: 1.0e-4
+critic_lr: 1.0e-4
+pretrain: [false, true]
+
+max_steps: 1000000
+num_layers: 3
+layer_size: 256
+rollout_batch_size: 50000
+rollout_freq: 1000
+rollout_retain: 5
+num_repeat: 1
+actor_update: lambda-return
+critic_update: lambda-return
+
+video_interval: 50000
+eval_interval: 50000
+save_interval: 100000
+
+wandb:
+  project: leq_mountaincar_hyperparameter_search

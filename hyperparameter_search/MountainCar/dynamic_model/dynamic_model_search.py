@@ -13,12 +13,17 @@ from typing import Any
 import yaml
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-LEQ_ROOT = SCRIPT_DIR.parents[1]
+LEQ_ROOT = SCRIPT_DIR.parents[2]
 WORKSPACE = LEQ_ROOT.parent
 OFFLINERL_ROOT = WORKSPACE / 'OfflineRL-Kit'
 DYNAMICS_SCRIPT = OFFLINERL_ROOT / 'run_example' / 'run_dynamics.py'
 DEFAULT_CONFIG = SCRIPT_DIR / 'dynamic_modelf.yaml'
 DEFAULT_BEST_RUN_PATH = SCRIPT_DIR / 'best_run.yaml'
+
+
+def best_run_path_for_mode(base_path: Path, reward_mode: str) -> Path:
+    """Map best_run.yaml → best_run_twohot.yaml / best_run_gaussian_joint.yaml."""
+    return base_path.with_name(f'{base_path.stem}_{reward_mode}{base_path.suffix}')
 
 # Patience large enough that early stopping never fires before max_epochs.
 _EARLY_STOP_DISABLED_PATIENCE = 10**9
@@ -141,6 +146,15 @@ def format_float_tag(value: float) -> str:
     return f'{value:g}'.replace('.', 'p')
 
 
+def format_reward_mode_tag(reward_mode: str) -> str:
+    """Compact reward-head tag for run names."""
+    if reward_mode == 'gaussian_joint':
+        return 'rmgauss'
+    if reward_mode == 'twohot':
+        return 'rmtwohot'
+    return f'rm{reward_mode}'
+
+
 def build_run_name(
     prefix: str,
     *,
@@ -153,6 +167,7 @@ def build_run_name(
     holdout_ratio: float,
     dynamics_batch_size: int,
     logvar_loss_coef: float,
+    reward_mode: str,
     seed: int,
 ) -> str:
     lr_tag = format_lr_tag(dynamics_lr)
@@ -165,6 +180,7 @@ def build_run_name(
         f'hr{format_float_tag(holdout_ratio)}_'
         f'bs{dynamics_batch_size}_'
         f'lv{format_float_tag(logvar_loss_coef)}_'
+        f'{format_reward_mode_tag(reward_mode)}_'
         f'seed{seed}'
     )
 
@@ -333,7 +349,10 @@ def main(argv: list[str] | None = None) -> None:
         '--best-run-path',
         type=Path,
         default=DEFAULT_BEST_RUN_PATH,
-        help=f'Where to write the best-run YAML (default: {DEFAULT_BEST_RUN_PATH})',
+        help=(
+            'Base path for best-run YAMLs; one file is written per reward_mode '
+            f'(e.g. best_run_twohot.yaml). Default: {DEFAULT_BEST_RUN_PATH}'
+        ),
     )
     parser.add_argument(
         'overrides',
@@ -378,7 +397,9 @@ def main(argv: list[str] | None = None) -> None:
     logvar_list = [
         float(v) for v in iter_search_values(cfg.get('logvar_loss_coef', 0.01))
     ]
-    reward_mode = str(cfg.get('reward_mode', 'twohot'))
+    reward_mode_list = [
+        str(v) for v in iter_search_values(cfg.get('reward_mode', 'twohot'))
+    ]
     num_reward_bins = int(cfg.get('num_reward_bins', 255))
     reward_loss_weight = float(cfg.get('reward_loss_weight', 1.0))
     dynamics_loss_weight = float(cfg.get('dynamics_loss_weight', 1.0))
@@ -405,6 +426,7 @@ def main(argv: list[str] | None = None) -> None:
             holdout_ratio_list,
             batch_size_list,
             logvar_list,
+            reward_mode_list,
         )
     )
     valid_combos = [
@@ -422,7 +444,7 @@ def main(argv: list[str] | None = None) -> None:
         f'holdout_ratio={holdout_ratio_list}, '
         f'dynamics_batch_size={batch_size_list}, '
         f'logvar_loss_coef={logvar_list}, '
-        f'reward_mode={reward_mode}, num_reward_bins={num_reward_bins}, '
+        f'reward_mode={reward_mode_list}, num_reward_bins={num_reward_bins}, '
         f'reward_loss_weight={reward_loss_weight}, '
         f'dynamics_loss_weight={dynamics_loss_weight}, '
         f'early_stopping={cfg.get("early_stopping")}, '
@@ -439,7 +461,7 @@ def main(argv: list[str] | None = None) -> None:
             'No valid combos (need n_elites <= n_ensemble for every pair).'
         )
 
-    best: dict[str, Any] | None = None
+    best_by_mode: dict[str, dict[str, Any]] = {}
     for (
         seed,
         dynamics_max_epochs,
@@ -451,6 +473,7 @@ def main(argv: list[str] | None = None) -> None:
         holdout_ratio,
         dynamics_batch_size,
         logvar_loss_coef,
+        reward_mode,
     ) in valid_combos:
         weight_decay = scale_weight_decay(
             adapt_weight_decay(wd_base, len(hidden_dims) + 1),
@@ -467,6 +490,7 @@ def main(argv: list[str] | None = None) -> None:
             holdout_ratio=holdout_ratio,
             dynamics_batch_size=dynamics_batch_size,
             logvar_loss_coef=logvar_loss_coef,
+            reward_mode=reward_mode,
             seed=seed,
         )
         holdout_loss = run_dynamics(
@@ -531,19 +555,34 @@ def main(argv: list[str] | None = None) -> None:
                 'name': run_name,
             },
         }
-        if best is None or holdout_loss < float(best['holdout_loss']):
-            best = candidate
+        prev = best_by_mode.get(reward_mode)
+        if prev is None or holdout_loss < float(prev['holdout_loss']):
+            best_by_mode[reward_mode] = candidate
+            out_path = best_run_path_for_mode(args.best_run_path, reward_mode)
+            save_best_run(out_path, candidate)
             print(
-                f'New best run: {run_name} '
+                f'New best {reward_mode} run: {run_name} '
                 f'(holdout_loss={holdout_loss})'
             )
 
-    if best is None:
+    if not best_by_mode:
         raise RuntimeError(
             'No successful runs with a parseable holdout loss; '
-            f'not writing {args.best_run_path}'
+            f'not writing best-run YAMLs under {args.best_run_path}'
         )
-    save_best_run(args.best_run_path, best)
+
+    missing_modes = [m for m in reward_mode_list if m not in best_by_mode]
+    if missing_modes:
+        print(
+            'Warning: no parseable holdout loss for reward mode(s): '
+            f'{missing_modes}'
+        )
+
+    for reward_mode, payload in best_by_mode.items():
+        print(
+            f'Best {reward_mode}: {payload["output_model_name"]} '
+            f'(holdout_loss={payload["holdout_loss"]})'
+        )
 
 
 if __name__ == '__main__':

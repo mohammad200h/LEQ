@@ -1,6 +1,6 @@
 task: mountaincar-human-v0
 seed: 3
-output_model_name: dynamics_mountaincar_ep250_lr1e-3_wd2x_ens7e5_h200x4_hr0p2_bs256_lv0p01_seed3
+output_model_name: dynamics_mountaincar_ep250_lr1e-3_wd2x_ens5e3_h200x4_hr0p1_bs256_lv0p01_rmgauss_seed3
 dynamics_max_epochs: 250
 dynamics_lr: 0.001
 dynamics_weight_decay_scale: 2.0
@@ -10,17 +10,17 @@ dynamics_weight_decay:
 - 0.00015
 - 0.00015
 - 0.0002
-n_ensemble: 7
-n_elites: 5
+n_ensemble: 5
+n_elites: 3
 dynamics_hidden_dims:
 - 200
 - 200
 - 200
 - 200
-holdout_ratio: 0.2
+holdout_ratio: 0.1
 dynamics_batch_size: 256
 logvar_loss_coef: 0.01
-reward_mode: twohot
+reward_mode: gaussian_joint
 num_reward_bins: 255
 reward_loss_weight: 1.0
 dynamics_loss_weight: 1.0
@@ -29,7 +29,7 @@ max_epochs_since_update: 10
 eval_num_trajs: 50
 eval_fixed_trajs: true
 eval_freq: 10
-holdout_loss: 0.04007335007190704
+holdout_loss: 1.4661833047866821
 wandb:
   project: dynamics_mountaincar_hyperparameter_search
-  name: dynamics_mountaincar_ep250_lr1e-3_wd2x_ens7e5_h200x4_hr0p2_bs256_lv0p01_seed3
+  name: dynamics_mountaincar_ep250_lr1e-3_wd2x_ens5e3_h200x4_hr0p1_bs256_lv0p01_rmgauss_seed3

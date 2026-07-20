@@ -18,7 +18,7 @@ from typing import Any
 import yaml
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-LEQ_ROOT = SCRIPT_DIR.parents[1]
+LEQ_ROOT = SCRIPT_DIR.parents[2]
 WORKSPACE = LEQ_ROOT.parent
 OFFLINERL_ROOT = WORKSPACE / 'OfflineRL-Kit'
 DEFAULT_BEST_RUN_PATH = SCRIPT_DIR / 'best_run.yaml'
@@ -59,7 +59,7 @@ def link_or_copy(src: Path, dst: Path, *, copy: bool, force: bool) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description='Install best MountainCar dynamics model for train_LEQ.py'
+        description='Install best Walker2D dynamics model for train_LEQ.py'
     )
     parser.add_argument(
         '--best-run',

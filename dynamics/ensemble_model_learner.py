@@ -279,10 +279,18 @@ def get_world_model(
     reward_scaler = jax.device_put(reward_scaler)
 
     num_models = int(ckpt["backbones.0.weight"].shape[0])
+    num_layers = sum(
+        1 for k in ckpt if k.startswith("backbones.") and k.endswith(".weight")
+    )
+    # Infer MLP width/depth from the checkpoint (search may use [200,200] or [200]x4).
+    # EnsembleLinear weights are (n_ensemble, in_dim, out_dim) — use out_dim.
+    hidden_dims = tuple(
+        int(ckpt[f"backbones.{i}.weight"].shape[2]) for i in range(num_layers)
+    )
     model_def = EnsembleWorldModel(
         num_models,
         len(elites),
-        (200, 200, 200, 200),
+        hidden_dims,
         obs_dim,
         action_dim,
         reward_mode=reward_mode,
@@ -305,7 +313,6 @@ def get_world_model(
     )
 
     ckpt_jax = {}
-    num_layers = sum(1 for k in ckpt if k.startswith("backbones.") and k.endswith(".weight"))
     for i in range(num_layers):
         ckpt_jax[f"layers_{i}"] = {
             "kernel": ckpt[f"backbones.{i}.weight"],

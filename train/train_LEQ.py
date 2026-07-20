@@ -46,6 +46,12 @@ flags.DEFINE_string("env_name", "antmaze-medium-play-v0", "Environment name.")
 flags.DEFINE_string("load_dir", None, "Dynamics model load dir")
 flags.DEFINE_string("save_dir", "./tmp/EP/", "Tensorboard logging dir.")
 flags.DEFINE_string("wandb_key", "", "Wandb key")
+flags.DEFINE_string("wandb_project", "IQL", "Wandb project name.")
+flags.DEFINE_string(
+    "wandb_name",
+    None,
+    "Wandb run name (default: LEQ_<env>_<seed>).",
+)
 flags.DEFINE_string("dynamics", "torch", "Dynamics model")
 flags.DEFINE_integer("seed", 42, "Random seed.")
 flags.DEFINE_integer("eval_episodes", 10, "Number of episodes used for evaluation.")
@@ -179,10 +185,11 @@ def main(_):
     print(FLAGS.flag_values_dict())
     if FLAGS.debug is False:
         wandb.login(key=FLAGS.wandb_key)
+        wandb_name = FLAGS.wandb_name or f"LEQ_{FLAGS.env_name}_{FLAGS.seed}"
         run = wandb.init(
             # Set the project where this run will be logged
-            project="IQL",
-            name=f"LEQ_{FLAGS.env_name}_{FLAGS.seed}",
+            project=FLAGS.wandb_project,
+            name=wandb_name,
             # Track hyperparameters and run metadata
             config={
                 **FLAGS.flag_values_dict(),
@@ -219,7 +226,9 @@ def main(_):
         )
         print(obs_dim, action_dim)
         termination_fn = get_termination_fn(task=FLAGS.env_name)
-        if 1 <= FLAGS.seed and FLAGS.seed <= 5:
+        if FLAGS.load_dir:
+            model_path = FLAGS.load_dir
+        elif 1 <= FLAGS.seed and FLAGS.seed <= 5:
             print("TESTING SEEDS!")
             model_path = os.path.join(
                 "../OfflineRL-Kit/models/dynamics-ensemble/",
@@ -230,6 +239,7 @@ def main(_):
             model_path = os.path.join(
                 "../OfflineRL-Kit/models/dynamics-ensemble/", str(1), FLAGS.env_name
             )
+        print(f"Loading dynamics from: {model_path}")
         from dynamics.ensemble_model_learner import get_world_model
 
         env, raw_dataset, dataset, reward_scaler = make_env_and_dataset(
@@ -452,9 +462,14 @@ def main(_):
                     ),
                 }
             )
+    final_score = float(np.mean(score))
+    final_length = float(np.mean(length))
+    # Printed for hyperparameter-search parsers (see hyperparameter_search/*/leq/).
+    print(f"final score: {final_score}")
+    print(f"final length: {final_length}")
     if run is not None:
-        run.log({f"evaluation/final_score": np.mean(score)}, step=1000000)
-        run.log({f"evaluation/final_length": np.mean(length)}, step=1000000)
+        run.log({f"evaluation/final_score": final_score}, step=1000000)
+        run.log({f"evaluation/final_length": final_length}, step=1000000)
 
 
 if __name__ == "__main__":

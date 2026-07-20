@@ -28,24 +28,24 @@ Focused search (default config):
 
 ```bash
 cd /workspace/OfflineRL-Kit
-python3 ../LEQ/hyperparameter_search/Walker2D/dynamic_model_search.py
+python3 ../LEQ/hyperparameter_search/Walker2D/dynamic_model/dynamic_model_search.py
 ```
 
 Comprehensive search (start with one seed — the full grid is large):
 
 ```bash
 cd /workspace/OfflineRL-Kit
-python3 ../LEQ/hyperparameter_search/Walker2D/dynamic_model_search.py \
-  --config ../LEQ/hyperparameter_search/Walker2D/dynamic_modelf_comprehensive.yaml \
+python3 ../LEQ/hyperparameter_search/Walker2D/dynamic_model/dynamic_model_search.py \
+  --config ../LEQ/hyperparameter_search/Walker2D/dynamic_model/dynamic_modelf_comprehensive.yaml \
   --seed 1
 ```
 
 Optional:
 
 ```bash
-python3 ../LEQ/hyperparameter_search/Walker2D/dynamic_model_search.py --seed 2
-python3 ../LEQ/hyperparameter_search/Walker2D/dynamic_model_search.py --no-track
-python3 ../LEQ/hyperparameter_search/Walker2D/dynamic_model_search.py --project my_wandb_project
+python3 ../LEQ/hyperparameter_search/Walker2D/dynamic_model/dynamic_model_search.py --seed 2
+python3 ../LEQ/hyperparameter_search/Walker2D/dynamic_model/dynamic_model_search.py --no-track
+python3 ../LEQ/hyperparameter_search/Walker2D/dynamic_model/dynamic_model_search.py --project my_wandb_project
 ```
 
 Extra args after the script name are forwarded to every `run_dynamics.py` call.
@@ -53,7 +53,7 @@ Extra args after the script name are forwarded to every `run_dynamics.py` call.
 After a search finishes, install the winner for `train_LEQ.py`:
 
 ```bash
-cd /workspace/LEQ/hyperparameter_search/Walker2D
+cd /workspace/LEQ/hyperparameter_search/Walker2D/dynamic_model
 python3 copy_best_model.py --force
 ```
 
@@ -108,7 +108,7 @@ scaled by `dynamics_weight_decay_scale`.
 | Artifact | Path / name |
 | --- | --- |
 | Checkpoints | `OfflineRL-Kit/models/dynamics-ensemble/<seed>/<run_name>/` |
-| Best params | `LEQ/hyperparameter_search/Walker2D/best_run.yaml` |
+| Best params | `LEQ/hyperparameter_search/Walker2D/dynamic_model/best_run.yaml` |
 | WandB project | `dynamics_walker2d_hyperparameter_search` (override with `--project`) |
 | Run name | Encodes knobs, e.g. `dynamics_walker2d_ep250_lr1e-3_wd2x_ens7e5_h200x4_hr0p2_bs256_lv0p01_seed3` |
 

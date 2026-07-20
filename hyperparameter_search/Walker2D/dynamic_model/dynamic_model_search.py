@@ -13,7 +13,7 @@ from typing import Any
 import yaml
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-LEQ_ROOT = SCRIPT_DIR.parents[1]
+LEQ_ROOT = SCRIPT_DIR.parents[2]
 WORKSPACE = LEQ_ROOT.parent
 OFFLINERL_ROOT = WORKSPACE / 'OfflineRL-Kit'
 DYNAMICS_SCRIPT = OFFLINERL_ROOT / 'run_example' / 'run_dynamics.py'

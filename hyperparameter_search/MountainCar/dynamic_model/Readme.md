@@ -19,42 +19,38 @@ Search knobs live in:
 
 | File | Role |
 | --- | --- |
-| `dynamic_modelf.yaml` | Default focused grid (LR × WD × seeds) |
-| `dynamic_modelf_comprehensive.yaml` | All architecture / train knobs expanded |
+| `dynamic_modelf.yaml` | Comprehensive grid (LR × WD × ensemble × arch × holdout × batch × logvar × reward head) |
+
+The full cartesian product is large (~512 runs with `--seed 1`, covering both
+`twohot` and `gaussian_joint` reward heads). Prefer one seed first, then confirm
+the winning region across seeds.
 
 ## Run
 
-Focused search (default config):
-
 ```bash
 cd /workspace/OfflineRL-Kit
-python3 ../LEQ/hyperparameter_search/MountainCar/dynamic_model_search.py
-```
-
-Comprehensive search (start with one seed — the full grid is large):
-
-```bash
-cd /workspace/OfflineRL-Kit
-python3 ../LEQ/hyperparameter_search/MountainCar/dynamic_model_search.py \
-  --config ../LEQ/hyperparameter_search/MountainCar/dynamic_modelf_comprehensive.yaml \
+python3 ../LEQ/hyperparameter_search/MountainCar/dynamic_model/dynamic_model_search.py \
   --seed 1
 ```
 
 Optional:
 
 ```bash
-python3 ../LEQ/hyperparameter_search/MountainCar/dynamic_model_search.py --seed 2
-python3 ../LEQ/hyperparameter_search/MountainCar/dynamic_model_search.py --no-track
-python3 ../LEQ/hyperparameter_search/MountainCar/dynamic_model_search.py --project my_wandb_project
+python3 ../LEQ/hyperparameter_search/MountainCar/dynamic_model/dynamic_model_search.py --seed 2
+python3 ../LEQ/hyperparameter_search/MountainCar/dynamic_model/dynamic_model_search.py --no-track
+python3 ../LEQ/hyperparameter_search/MountainCar/dynamic_model/dynamic_model_search.py --project my_wandb_project
 ```
 
 Extra args after the script name are forwarded to every `run_dynamics.py` call.
 
-After a search finishes, install the winner for `train_LEQ.py`:
+After a search finishes, install a winner for `train_LEQ.py` (one reward head
+at a time — both write separate `best_run_*.yaml` files):
 
 ```bash
-cd /workspace/LEQ/hyperparameter_search/MountainCar
-python3 copy_best_model.py --force
+cd /workspace/LEQ/hyperparameter_search/MountainCar/dynamic_model
+python3 copy_best_model.py --reward-mode twohot --force
+python3 copy_best_model.py --reward-mode gaussian_joint --force
+python3 copy_best_model.py --all-reward-modes   # list winners only
 ```
 
 ## What is searched
@@ -80,9 +76,8 @@ the **cartesian product** of all axes and skips combos with `n_elites > n_ensemb
 | Seeds | `seeds` / `seed` | `--seed` | Reproducibility; CLI `--seed` overrides YAML |
 
 Also fixed from YAML (not usually gridded): `early_stopping`,
-`max_epochs_since_update`, `reward_mode`, `num_reward_bins`,
-`reward_loss_weight`, `dynamics_loss_weight`, `eval_num_trajs`,
-`eval_fixed_trajs`, `eval_freq`.
+`max_epochs_since_update`, `num_reward_bins`, `reward_loss_weight`,
+`dynamics_loss_weight`, `eval_num_trajs`, `eval_fixed_trajs`, `eval_freq`.
 
 When `dynamics_hidden_dims` depth changes, `dynamics_weight_decay_base` is
 **resampled** to length `len(hidden_dims) + 1` (required by OfflineRL-Kit), then
@@ -90,8 +85,9 @@ scaled by `dynamics_weight_decay_scale`.
 
 ### Selection vs monitoring
 
-- **Selection:** elite mean holdout loss printed at the end of training → written
-  to `best_run.yaml`.
+- **Selection:** elite mean holdout loss, **separately per `reward_mode`**
+  (twohot and gaussian_joint losses are not comparable) → written to
+  `best_run_twohot.yaml` and `best_run_gaussian_joint.yaml`.
 - **Monitoring:** demo delta eval (`eval_*`) → WandB / logs only.
 
 ### Out of scope for this search
@@ -108,15 +104,15 @@ scaled by `dynamics_weight_decay_scale`.
 | Artifact | Path / name |
 | --- | --- |
 | Checkpoints | `OfflineRL-Kit/models/dynamics-ensemble/<seed>/<run_name>/` |
-| Best params | `LEQ/hyperparameter_search/MountainCar/best_run.yaml` |
+| Best params | `best_run_twohot.yaml` and `best_run_gaussian_joint.yaml` |
 | WandB project | `dynamics_mountaincar_hyperparameter_search` (override with `--project`) |
-| Run name | Encodes knobs, e.g. `dynamics_mountaincar_ep250_lr1e-3_wd2x_ens7e5_h200x4_hr0p2_bs256_lv0p01_seed3` |
+| Run name | Encodes knobs, e.g. `dynamics_mountaincar_ep250_lr1e-3_wd2x_ens7e5_h200x4_hr0p2_bs256_lv0p01_rmtwohot_seed3` |
 
 ## Tips
 
 1. Expand **one axis at a time** when debugging; full multi-axis grids grow fast.
-2. Use `--seed 1` on the comprehensive config first, then confirm top settings
-   with `seeds: [1, 2, 3, 4, 5]` in a smaller YAML.
+2. Use `--seed 1` first, then confirm top settings with
+   `seeds: [1, 2, 3, 4, 5]` in a trimmed YAML.
 3. Re-copy `run_dynamics.py` after pulling changes that add CLI flags.
 4. `copy_best_model.py` symlinks the winning checkpoint to
    `models/dynamics-ensemble/<seed>/<task>/` so `train_LEQ.py` finds it.
@@ -140,11 +136,13 @@ quickly or leave too little data for training once holdout is taken. Prefer:
 
 Practical workflow:
 
-1. Run the focused YAML (LR × WD × seeds) first — WD scale usually moves the
-   needle most on this dataset.
-2. Then try architecture / holdout / batch on the best LR–WD cell with
-   `--seed 1`, using `dynamic_modelf_comprehensive.yaml` or a trimmed copy.
+1. Run `dynamic_modelf.yaml` with `--seed 1` (trim axes if needed).
+2. Confirm the winning region across seeds.
 3. Trust **holdout loss** for checkpoint selection; use fixed-traj demo delta
    eval only to spot wild failures (e.g. exploding multi-step error).
 4. After installing the best model, keep policy rollouts short at first —
    long model rollouts amplify dynamics error when the dataset is this small.
+5. The LEQ search under `../leq/` loads both `best_run_*.yaml` winners via
+   `--load_dir` (no install step needed). Best-run YAMLs are updated whenever
+   a new mode winner is found, so a long search can be interrupted and still
+   leave usable checkpoints for policy tuning.
